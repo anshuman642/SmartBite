@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Admin Panel - SmartBite</title>
+
+<style>
+body{
+font-family:Arial;
+background:#f4f4f4;
+margin:0;
+}
+
+header{
+background:#171a29;
+color:white;
+padding:15px 40px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.container{
+padding:30px;
+}
+
+.box{
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.2);
+margin-bottom:20px;
+}
+
+button{
+background:#ff5722;
+color:white;
+border:none;
+padding:10px 20px;
+border-radius:5px;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>Admin Panel 📋</h2>
+<a href="index.html" style="color:white;">Home</a>
+</header>
+
+<div class="container">
+
+<div class="box">
+<h3>Total Orders: <span id="count">0</span></h3>
+</div>
+
+<div class="box">
+<h3>All Orders</h3>
+<div id="orders"></div>
+</div>
+
+<div class="box">
+<button onclick="clearOrders()">Clear All Orders</button>
+</div>
+
+</div>
+
+<script>
+
+function showOrders(){
+
+let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+document.getElementById("count").innerText = orders.length;
+
+let text="";
+
+orders.forEach((order,index)=>{
+text += `<b>Order ${index+1}</b><br>`;
+
+order.forEach(item=>{
+text += `${item.name} - ₹${item.price}<br>`;
+});
+
+text += "<hr>";
+});
+
+document.getElementById("orders").innerHTML=text;
+}
+
+function clearOrders(){
+
+if(confirm("Delete all orders?")){
+localStorage.removeItem("orders");
+showOrders();
+}
+
+}
+
+showOrders();
+
+</script>
+
+</body>
+</html>
