@@ -2,50 +2,69 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Login - SmartBite</title>
+<title>Login</title>
 
 <style>
 body{
 font-family:Arial;
-background:#171a29;
-color:white;
+margin:0;
+background:linear-gradient(135deg,#ff7e5f,#feb47b);
+height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-height:100vh;
-margin:0;
 }
 
 .box{
 background:white;
-color:black;
 padding:30px;
-border-radius:12px;
+border-radius:14px;
+width:350px;
+box-shadow:0 10px 25px rgba(0,0,0,0.3);
 text-align:center;
-box-shadow:0 0 15px rgba(0,0,0,0.3);
 }
 
-h2{color:#ff5722}
+h2{
+color:#ff5722;
+margin-bottom:20px;
+}
 
 input{
-padding:12px;
-margin:10px;
-width:220px;
+width:100%;
+padding:10px;
+margin:8px 0;
+border-radius:8px;
 border:1px solid #ccc;
-border-radius:6px;
+font-size:15px;
 }
 
 button{
-padding:10px 25px;
+width:100%;
+padding:12px;
 background:#ff5722;
 color:white;
 border:none;
-border-radius:6px;
-cursor:pointer;
+border-radius:10px;
+font-size:16px;
 font-weight:bold;
+cursor:pointer;
+margin-top:10px;
 }
 
-p{margin-top:10px}
+button:hover{
+background:#e64a19;
+}
+
+.link{
+margin-top:12px;
+font-size:14px;
+}
+
+.link a{
+color:#ff5722;
+font-weight:bold;
+text-decoration:none;
+}
 </style>
 </head>
 
@@ -53,14 +72,17 @@ p{margin-top:10px}
 
 <div class="box">
 
-<h2>SmartBite Login 🍔</h2>
+<h2>Login 🔐</h2>
 
-<input id="user" placeholder="Username"><br>
-<input id="pass" type="password" placeholder="Password"><br>
+<input id="luser" placeholder="Email or Username">
+<input id="lpass" type="password" placeholder="Password">
 
 <button onclick="login()">Login</button>
 
-<p id="msg"></p>
+<div class="link">
+No account?
+<a href="signup.html">Create Account</a>
+</div>
 
 </div>
 
@@ -68,22 +90,26 @@ p{margin-top:10px}
 
 function login(){
 
-let u = document.getElementById("user").value;
-let p = document.getElementById("pass").value;
+let account = JSON.parse(localStorage.getItem("account"));
 
-if(u=="" || p==""){
-document.getElementById("msg").innerText =
-"⚠ Please enter username & password";
+if(!account){
+alert("No account found. Please sign up first.");
 return;
 }
 
-// Save username
-localStorage.setItem("user", u);
 
-// Redirect to home page
+if(luser.value == account.email && lpass.value == account.password){
+
+
+localStorage.setItem("user", account.name);
+
+
 window.location = "index.html";
-}
 
+}else{
+alert("Wrong Email or Password");
+}
+}
 </script>
 
 </body>
