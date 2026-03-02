@@ -130,7 +130,7 @@ cursor:pointer;
 <a href="#">Home</a>
 <a href="cart.html">Cart</a>
 <a href="history.html">Orders</a>
-<a href="pages/admin-login.html">Admin</a>
+<a href="admin-login.html">Admin</a>
 <button onclick="showOffers()">🎁 Offers</button>
 </nav>
 
@@ -229,27 +229,18 @@ text-align:center;
 </div>
 </div>
 <script>
-    window.onload = function(){
-
-localStorage.removeItem("user");
-
-window.location = "login.html";
-
-}
-
-
+   
 let user = localStorage.getItem("user");
 
 if(!user){
 window.location = "login.html";
-}else{
-document.getElementById("welcome").innerText =
-"Welcome " + user + " 👋";
-window.onbeforeunload = function(){
-localStorage.removeItem("user");
+}
+else{
+let w = document.getElementById("welcome");
+if(w){
+w.innerText = "Welcome " + user + " 👋";
 }
 }
-
 
 
 let foods = [
@@ -285,6 +276,7 @@ loadMenu();
 }
 
 
+// 🎁 OFFERS
 function showOffers(){
 document.getElementById("offerPopup").style.display = "flex";
 }
@@ -300,7 +292,7 @@ closeOffer();
 }
 
 
-
+// 🍔 MENU
 function loadMenu(){
 
 let html="";
@@ -327,7 +319,7 @@ updateCartCount();
 }
 
 
-
+// 🛒 CART
 function addToCart(name, price){
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -340,6 +332,7 @@ updateCartCount();
 }
 
 
+// 💀 OFFER TOTAL
 function calculateTotal(){
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -354,17 +347,9 @@ let qty = cart.length;
 
 if(offerActive){
 
-if(qty >= 5){
-total *= 0.7; 
-}
-
-else if(qty >= 3){
-total *= 0.8; 
-}
-
-else if(qty >= 2){
-total *= 0.9; 
-}
+if(qty >= 5) total *= 0.7;
+else if(qty >= 3) total *= 0.8;
+else if(qty >= 2) total *= 0.9;
 
 }
 
@@ -372,6 +357,7 @@ return Math.floor(total);
 }
 
 
+// 🛒 ORDER POPUP
 function openOrderForm(){
 
 let popup = document.getElementById("orderPopup");
@@ -419,7 +405,6 @@ updateCartCount();
 }
 
 
-
 function decrease(i){
 let cart = JSON.parse(localStorage.getItem("cart"));
 cart.splice(i,1);
@@ -429,7 +414,7 @@ updateCartCount();
 }
 
 
-
+// ✅ SAVE ORDER FOR ADMIN
 function confirmOrder(){
 
 let name = oname.value;
@@ -452,7 +437,6 @@ items: cart,
 date: new Date().toLocaleString()
 };
 
-
 let orders = JSON.parse(localStorage.getItem("orders")) || [];
 orders.push(order);
 localStorage.setItem("orders", JSON.stringify(orders));
@@ -464,16 +448,12 @@ closeOrder();
 updateCartCount();
 }
 
+
+
 function updateCartCount(){
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 document.getElementById("cartBox").innerText =
 "Cart (" + cart.length + ")";
-}
-
-
-
-function openCart(){
-window.location = "cart.html";
 }
 
 
@@ -488,14 +468,12 @@ alert("Fill all fields");
 return;
 }
 
-let review = `
+reviews.innerHTML += `
 <div class="reviewBox">
 <b>${name}</b> — ${rating}
 <p>${comment}</p>
 </div>
 `;
-
-reviews.innerHTML += review;
 
 rname.value="";
 rcomment.value="";
@@ -509,6 +487,7 @@ window.location = "login.html";
 }
 
 loadMenu();
-</Script>
+
+</script>
 </body>
 </html>
