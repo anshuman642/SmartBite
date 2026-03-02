@@ -1,107 +1,78 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Admin Panel - SmartBite</title>
-
+<title>Admin Dashboard</title>
 <style>
 body{
-font-family:Arial;
-background:#f4f4f4;
-margin:0;
+    font-family:Arial;
+    background:#f2f2f2
 }
 
-header{
+.header{
 background:#171a29;
 color:white;
-padding:15px 40px;
-display:flex;
-justify-content:space-between;
-align-items:center;
+padding:15px;
+text-align:center;
+font-size:22px;
 }
 
-.container{
-padding:30px;
-}
-
-.box{
+.table{
+width:90%;
+margin:auto;
 background:white;
+margin-top:20px;
 padding:20px;
-border-radius:10px;
-box-shadow:0 0 10px rgba(0,0,0,0.2);
-margin-bottom:20px;
+border-radius:12px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse
+}
+th,td{padding:10px;
+    border-bottom:1px solid #ddd;
+    text-align:center
 }
 
 button{
-background:#ff5722;
-color:white;
+padding:6px 12px;
 border:none;
-padding:10px 20px;
-border-radius:5px;
+border-radius:6px;
 cursor:pointer;
 }
+
+.del{
+    background:red;
+    color:white
+}
+.done{
+    background:green;
+    color:white
+    }
 </style>
 </head>
 
 <body>
 
-<header>
-<h2>Admin Panel 📋</h2>
-<a href="index.html" style="color:white;">Home</a>
-</header>
+<div class="header">Admin Dashboard 👑</div>
 
-<div class="container">
+<div class="table">
 
-<div class="box">
-<h3>Total Orders: <span id="count">0</span></h3>
-</div>
-
-<div class="box">
-<h3>All Orders</h3>
-<div id="orders"></div>
-</div>
-
-<div class="box">
-<button onclick="clearOrders()">Clear All Orders</button>
-</div>
+<table id="ordersTable">
+    <div id="adminOrders">
+        
+    </div>
+<tr>
+<th>Name</th>
+<th>Mobile</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</table>
 
 </div>
 
-<script>
-
-function showOrders(){
-
-let orders = JSON.parse(localStorage.getItem("orders")) || [];
-
-document.getElementById("count").innerText = orders.length;
-
-let text="";
-
-orders.forEach((order,index)=>{
-text += `<b>Order ${index+1}</b><br>`;
-
-order.forEach(item=>{
-text += `${item.name} - ₹${item.price}<br>`;
-});
-
-text += "<hr>";
-});
-
-document.getElementById("orders").innerHTML=text;
-}
-
-function clearOrders(){
-
-if(confirm("Delete all orders?")){
-localStorage.removeItem("orders");
-showOrders();
-}
-
-}
-
-showOrders();
-
-</script>
+<script src="admin.js"></script>
 
 </body>
 </html>
