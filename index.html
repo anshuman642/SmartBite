@@ -8,7 +8,8 @@
 body{
     font-family:Arial;
     margin:0;
-    background:#f2f2f2}
+    background:#f2f2f2
+}
 
 header{
 display:flex;
@@ -20,14 +21,14 @@ box-shadow:0 2px 5px rgba(0,0,0,0.1);
 }
 
 .logo{
-font-size:24px;
-font-weight:bold;
-color:#ff5722
+    font-size:24px;
+    font-weight:bold;
+    color:#ff5722
 }
 
 nav{
-display:flex;
-gap:12px
+    display:flex;
+    gap:12px
 }
 
 nav a{
@@ -40,7 +41,6 @@ font-weight:bold;
 }
 
 .rightBox{
-    
     display:flex;
     align-items:center;
     gap:10px
@@ -65,7 +65,6 @@ padding:25px;
 .card{
 background:white;
 border-radius:14px;
-
 overflow:hidden;
 box-shadow:0 2px 10px rgba(0,0,0,0.15);
 }
@@ -74,12 +73,9 @@ box-shadow:0 2px 10px rgba(0,0,0,0.15);
     width:100%;
     height:160px;
     object-fit:cover
-
 }
 
-.info{
-    padding:15px
-}
+.info{padding:15px}
 
 .price{
     font-weight:bold;
@@ -110,22 +106,17 @@ padding:12px;
 margin:10px 0;
 border-radius:8px;
 }
-.tagline{
-position:absolute;
-left: 90px;%;
-transform:translateX(90%);
-font-size:20px;
-font-weight:bold;
-color:#ff5722;
-}
 
 button{
 padding:8px 14px;
 border:none;
 border-radius:6px;
-background:#171a29;color:white;
+background:#171a29;
+color:white;
 cursor:pointer;
 }
+
+
 </style>
 </head>
 
@@ -134,18 +125,19 @@ cursor:pointer;
 <header>
 
 <div class="logo">SmartBite</div>
-<div class="tagline">घर जैसा स्वाद</div>
+
 <nav>
 <a href="#">Home</a>
-<a href="#">Orders</a>
-<a href="#">Admin</a>
-<a href="#">Offers</a>
+<a href="cart.html">Cart</a>
+<a href="history.html">Orders</a>
+<a href="pages/admin-login.html">Admin</a>
+<button onclick="showOffers()">🎁 Offers</button>
 </nav>
 
 <div class="rightBox">
 <span id="welcome"></span>
 <button onclick="logout()">Logout</button>
-<div class="cart" id="cartBox" onclick="placeOrder()">Cart (0)</div>
+<div class="cart" id="cartBox" onclick="openOrderForm()">Cart (0)</div>
 </div>
 
 </header>
@@ -175,8 +167,76 @@ cursor:pointer;
 <div id="reviews"></div>
 
 </div>
+<div id="orderPopup" style="
+display:none;
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,0.6);
+justify-content:center;
+align-items:center;
+">
 
+<div style="
+background:white;
+padding:25px;
+border-radius:14px;
+width:350px;
+">
+
+
+<h2>Place Order 🛒</h2>
+
+<input id="oname" placeholder="Your Name"><br><br>
+<input id="omobile" placeholder="Mobile Number"><br><br>
+<textarea id="oaddress" placeholder="Delivery Address"></textarea><br><br>
+
+<h3>Items</h3>
+<div id="orderItems"></div>
+
+<button onclick="confirmOrder()">Confirm Order</button>
+<button onclick="closeOrder()">Cancel</button>
+
+</div>
+</div>
+<div id="offerPopup" style="
+display:none;
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,0.6);
+justify-content:center;
+align-items:center;
+">
+
+<div style="
+background:white;
+padding:25px;
+border-radius:14px;
+width:350px;
+text-align:center;
+">
+
+<h2>🔥 Special Offers</h2>
+
+<p>🍔 Buy 1 Burger → Get Fries Free</p>
+<p>🍕 Order above ₹300 → 20% OFF</p>
+<p>🥤 Free Drink on 2 Orders</p>
+
+<button onclick="applyOffer()">Apply Offer</button>
+<button onclick="closeOffer()">Close</button>
+
+</div>
+</div>
 <script>
+    window.onload = function(){
+
+localStorage.removeItem("user");
+
+window.location = "login.html";
+
+}
+
 
 let user = localStorage.getItem("user");
 
@@ -185,7 +245,12 @@ window.location = "login.html";
 }else{
 document.getElementById("welcome").innerText =
 "Welcome " + user + " 👋";
+window.onbeforeunload = function(){
+localStorage.removeItem("user");
 }
+}
+
+
 
 let foods = [
 {name:"Burger",price:110,img:"https://images.unsplash.com/photo-1550547660-d9450f859349"},
@@ -206,53 +271,212 @@ let foods = [
 {name:"Milkshake",price:110,img:"https://images.unsplash.com/photo-1572490122747-3968b75cc699"}
 ];
 
-let cartCount = 0;
+
+let offerActive = false;
+
+window.onload = function(){
+
+// Reset cart every refresh
+localStorage.removeItem("cart");
+
+updateCartCount();
+loadMenu();
+
+}
+
+
+function showOffers(){
+document.getElementById("offerPopup").style.display = "flex";
+}
+
+function closeOffer(){
+document.getElementById("offerPopup").style.display = "none";
+}
+
+function applyOffer(){
+offerActive = true;
+alert("🔥 Buy More Save More Offer Activated!");
+closeOffer();
+}
+
+
 
 function loadMenu(){
+
 let html="";
 
-foods.forEach((f,i)=>{
+foods.forEach(f=>{
 html += `
 <div class="card">
 <img src="${f.img}">
 <div class="info">
 <h3>${f.name}</h3>
 <div class="price">₹${f.price}</div>
-<button class="addBtn" onclick="addToCart()">Add</button>
+
+<button class="addBtn"
+onclick="addToCart('${f.name}', ${f.price})">
+Add
+</button>
+
 </div>
 </div>`;
 });
 
-menu.innerHTML = html;
+document.getElementById("menu").innerHTML = html;
+updateCartCount();
 }
 
-function addToCart(){
-cartCount++;
-cartBox.innerText = "Cart (" + cartCount + ")";
+
+
+function addToCart(name, price){
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+cart.push({name:name, price:price});
+
+localStorage.setItem("cart", JSON.stringify(cart));
+
+updateCartCount();
 }
 
-function placeOrder(){
 
-let cname = prompt("Enter Your Name");
-let mobile = prompt("Enter Mobile Number");
-let address = prompt("Enter Delivery Address");
+function calculateTotal(){
 
-if(!cname || !mobile || !address){
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+let total = 0;
+
+cart.forEach(item=>{
+total += item.price;
+});
+
+let qty = cart.length;
+
+if(offerActive){
+
+if(qty >= 5){
+total *= 0.7; 
+}
+
+else if(qty >= 3){
+total *= 0.8; 
+}
+
+else if(qty >= 2){
+total *= 0.9; 
+}
+
+}
+
+return Math.floor(total);
+}
+
+
+function openOrderForm(){
+
+let popup = document.getElementById("orderPopup");
+popup.style.display = "flex";
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+let html="";
+let total = 0;
+
+cart.forEach((item,i)=>{
+html += `
+<div>
+${item.name} — ₹${item.price}
+<button onclick="increase(${i})">+</button>
+<button onclick="decrease(${i})">-</button>
+</div>
+`;
+total += item.price;
+});
+
+let finalTotal = calculateTotal();
+
+html += `
+<hr>
+<h3>Total: ₹${total}</h3>
+<h2 style="color:#ff5722">🔥 Offer Price: ₹${finalTotal}</h2>
+`;
+
+document.getElementById("orderItems").innerHTML = html;
+}
+
+
+function closeOrder(){
+document.getElementById("orderPopup").style.display = "none";
+}
+
+
+function increase(i){
+let cart = JSON.parse(localStorage.getItem("cart"));
+cart.push(cart[i]);
+localStorage.setItem("cart", JSON.stringify(cart));
+openOrderForm();
+updateCartCount();
+}
+
+
+
+function decrease(i){
+let cart = JSON.parse(localStorage.getItem("cart"));
+cart.splice(i,1);
+localStorage.setItem("cart", JSON.stringify(cart));
+openOrderForm();
+updateCartCount();
+}
+
+
+
+function confirmOrder(){
+
+let name = oname.value;
+let mobile = omobile.value;
+let address = oaddress.value;
+
+if(!name || !mobile || !address){
 alert("Fill all details");
 return;
 }
 
-let customer = {
-name: cname,
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+let order = {
+id: Date.now(),
+name: name,
 mobile: mobile,
 address: address,
-status: "Pending"
+items: cart,
+date: new Date().toLocaleString()
 };
 
-localStorage.setItem("customer", JSON.stringify(customer));
 
-window.location = "order.html";
+let orders = JSON.parse(localStorage.getItem("orders")) || [];
+orders.push(order);
+localStorage.setItem("orders", JSON.stringify(orders));
+
+alert("Order Placed Successfully 🎉");
+
+localStorage.removeItem("cart");
+closeOrder();
+updateCartCount();
 }
+
+function updateCartCount(){
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+document.getElementById("cartBox").innerText =
+"Cart (" + cart.length + ")";
+}
+
+
+
+function openCart(){
+window.location = "cart.html";
+}
+
+
 
 function addReview(){
 let name = rname.value;
@@ -277,14 +501,14 @@ rname.value="";
 rcomment.value="";
 }
 
+
+
 function logout(){
 localStorage.removeItem("user");
 window.location = "login.html";
 }
 
 loadMenu();
-
-</script>
-
+</Script>
 </body>
 </html>
