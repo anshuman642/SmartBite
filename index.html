@@ -276,7 +276,7 @@ loadMenu();
 }
 
 
-// 🎁 OFFERS
+
 function showOffers(){
 document.getElementById("offerPopup").style.display = "flex";
 }
@@ -292,7 +292,7 @@ closeOffer();
 }
 
 
-// 🍔 MENU
+
 function loadMenu(){
 
 let html="";
@@ -319,7 +319,7 @@ updateCartCount();
 }
 
 
-// 🛒 CART
+
 function addToCart(name, price){
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -332,7 +332,7 @@ updateCartCount();
 }
 
 
-// 💀 OFFER TOTAL
+
 function calculateTotal(){
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -414,7 +414,6 @@ updateCartCount();
 }
 
 
-// ✅ SAVE ORDER FOR ADMIN
 function confirmOrder(){
 
 let name = oname.value;
@@ -449,7 +448,7 @@ updateCartCount();
 }
 
 
-
+// 🔢 CART COUNT
 function updateCartCount(){
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 document.getElementById("cartBox").innerText =
@@ -457,7 +456,7 @@ document.getElementById("cartBox").innerText =
 }
 
 
-
+// ⭐ REVIEWS
 function addReview(){
 let name = rname.value;
 let rating = rrating.value;
